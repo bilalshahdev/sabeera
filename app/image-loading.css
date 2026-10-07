@@ -1,0 +1,42 @@
+.image-skeleton {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(105deg, #dedbd2 25%, #eeece5 42%, #dedbd2 58%);
+  background-size: 220% 100%;
+  animation: image-shimmer 1.25s ease-in-out infinite;
+  transition: opacity 280ms ease;
+}
+
+.image-skeleton--hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.work-image img,
+.preview-image img {
+  transition: opacity 280ms ease, transform 550ms cubic-bezier(.2,.7,.2,1);
+}
+
+.image-loading {
+  opacity: 0;
+}
+
+.image-loaded {
+  opacity: 1;
+}
+
+.image-contain {
+  object-fit: contain !important;
+}
+
+@keyframes image-shimmer {
+  from { background-position: 100% 0; }
+  to { background-position: -100% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .image-skeleton {
+    animation: none;
+  }
+}

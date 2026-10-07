@@ -69,7 +69,6 @@ export default function Home() {
           <div className="about-copy">
             <p className="lead">I&apos;m Sabeera, a Mass Communication student and Junior SEO Specialist building useful, discoverable digital experiences.</p>
             <p>My work sits at the intersection of search, content, and visual communication. I enjoy turning audits and keyword data into clear actions—and then shaping content that feels genuinely helpful to the people searching for it.</p>
-            <div className="education"><span>Currently studying</span><strong>BS Mass Communication</strong><small>National University of Modern Languages · 2023—Present</small></div>
           </div>
         </div>
       </section>
@@ -107,7 +106,7 @@ export default function Home() {
           <p className="section-no">LET&apos;S CONNECT</p>
           <h2>Have a search challenge<br />or a story to shape?</h2>
           <a className="email-link" href="mailto:sabeeraazmat25@gmail.com">sabeeraazmat25@gmail.com <ArrowUpRight /></a>
-          <div className="contact-meta"><span><MapPin size={15} /> Islamabad, Pakistan</span><a href="tel:+923165427380">+92 316 5427380</a><a href="mailto:sabeeraazmat25@gmail.com"><Mail size={15} /> Email me</a></div>
+          <div className="contact-meta"><span><MapPin size={15} /> Islamabad, Pakistan</span><a href="mailto:sabeeraazmat25@gmail.com"><Mail size={15} /> Email me</a></div>
         </div>
       </section>
 
