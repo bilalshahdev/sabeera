@@ -1,5 +1,17 @@
 import { experience } from "./experience";
 import { project } from "./project";
 import { siteSettings } from "./siteSettings";
+import { aboutSettings, brandSettings, contactSettings, contentSettings, heroSettings, layoutSettings, seoSettings } from "./settingsSections";
 
-export const schemaTypes = [siteSettings, experience, project];
+export const schemaTypes = [
+  siteSettings,
+  brandSettings,
+  layoutSettings,
+  heroSettings,
+  aboutSettings,
+  contentSettings,
+  contactSettings,
+  seoSettings,
+  experience,
+  project,
+];
