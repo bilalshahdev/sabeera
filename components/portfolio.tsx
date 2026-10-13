@@ -4,8 +4,11 @@ import Image from "next/image";
 import { useState } from "react";
 import { ArrowUpRight, ExternalLink } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import type { PortfolioProject } from "@/sanity/lib/types";
 
-const work = [
+type WorkItem = { title: string; type: string; image: string; file?: string; wide?: boolean; imageAlt?: string };
+
+const fallbackWork: WorkItem[] = [
   { title: "Fashion Trifold", type: "Editorial brochure", image: "/work/trifold-brochure.webp", file: "/work/trifold-brochure.pdf", wide: true },
   { title: "Perfect Home", type: "Promotional flyer", image: "/work/brand-flyer.webp", file: "/work/brand-flyer.pdf" },
   { title: "Study Visa", type: "Social media creative", image: "/work/study-visa.webp" },
@@ -32,7 +35,18 @@ function LoadableImage({ src, alt, sizes, contain = false }: { src: string; alt:
   );
 }
 
-export function PortfolioGrid() {
+export function PortfolioGrid({ projects = [] }: { projects?: PortfolioProject[] }) {
+  const work = projects.length
+    ? projects.map(project => ({
+        title: project.title,
+        type: project.type,
+        image: project.imageUrl,
+        file: project.fileUrl || project.externalUrl,
+        wide: project.wide,
+        imageAlt: project.imageAlt,
+      }))
+    : fallbackWork;
+
   return (
     <div className="work-grid">
       {work.map((item, index) => (
@@ -40,7 +54,7 @@ export function PortfolioGrid() {
           <DialogTrigger asChild>
             <button className={`work-card ${item.wide ? "work-card--wide" : ""}`} aria-label={`Preview ${item.title}`}>
               <span className="work-image">
-                <LoadableImage src={item.image} alt={`${item.title} design by Sabeera Azmat`} sizes="(max-width: 760px) calc(100vw - 30px), 576px" />
+                <LoadableImage src={item.image} alt={item.imageAlt || `${item.title} design by Sabeera Azmat`} sizes="(max-width: 760px) calc(100vw - 30px), 576px" />
                 <span className="work-index">0{index + 1}</span>
                 <span className="work-open"><ArrowUpRight size={20} /></span>
               </span>
