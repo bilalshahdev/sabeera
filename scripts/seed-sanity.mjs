@@ -56,6 +56,21 @@ for (const [order, project] of projects.entries()) {
 const settings = {
   _id: "siteSettings",
   _type: "siteSettings",
+  brandName: "Sabeera Azmat",
+  brandMark: "SA",
+  signatureColor: "#e96f56",
+  primaryBackgroundColor: "#f3f0e8",
+  primaryTextColor: "#1f211d",
+  sections: [
+    { _key: "hero", _type: "sectionConfig", section: "hero", visible: true },
+    { _key: "about", _type: "sectionConfig", section: "about", visible: true, backgroundColor: "#1f211d", textColor: "#f5f3ec" },
+    { _key: "expertise", _type: "sectionConfig", section: "expertise", visible: true },
+    { _key: "experience", _type: "sectionConfig", section: "experience", visible: true, backgroundColor: "#536259", textColor: "#ffffff" },
+    { _key: "work", _type: "sectionConfig", section: "work", visible: true },
+    { _key: "tools", _type: "sectionConfig", section: "tools", visible: true },
+    { _key: "contact", _type: "sectionConfig", section: "contact", visible: true, backgroundColor: "#e96f56", textColor: "#ffffff" },
+    { _key: "footer", _type: "sectionConfig", section: "footer", visible: true },
+  ],
   availability: "Available for opportunities · Islamabad, PK",
   role: "Junior SEO Specialist",
   heroTitle: "Search-led thinking,",
@@ -66,6 +81,11 @@ const settings = {
   aboutLead: "I’m Sabeera, a Mass Communication student and Junior SEO Specialist building useful, discoverable digital experiences.",
   aboutBody: "My work sits at the intersection of search, content, and visual communication. I enjoy turning audits and keyword data into clear actions—and then shaping content that feels genuinely helpful to the people searching for it.",
   expertiseHeading: "A practical toolkit for organic growth.",
+  experienceHeading: "Learning by",
+  experienceAccent: "doing.",
+  experienceDescription: "Hands-on work across live platforms, search data, content, and client-facing creative projects.",
+  workHeading: "Visual work, made with intent.",
+  workDescription: "A selection of brochure, campaign, and social media design explorations. Tap any project for a closer look.",
   services: [
     { _key: "strategy", _type: "object", title: "Search strategy", description: "Researching intent, competitors, and opportunities to create a focused roadmap." },
     { _key: "technical", _type: "object", title: "Technical & on-page", description: "Finding crawl, structure, metadata, speed, and content issues that hold a site back." },
@@ -84,6 +104,11 @@ const settings = {
   resume: { _type: "file", asset: { _type: "reference", _ref: resume._id } },
   seoTitle: "Sabeera Azmat | Junior SEO Specialist in Islamabad",
   seoDescription: "Portfolio of Sabeera Azmat, a junior SEO specialist specializing in technical SEO, keyword research, content optimization, and visual design.",
+  seoKeywords: ["Sabeera Azmat", "Junior SEO Specialist", "SEO Specialist Islamabad", "Technical SEO", "Keyword Research", "Content Optimization", "On-Page SEO"],
+  canonicalUrl: "https://sabeera.vercel.app",
+  ogTitle: "Sabeera Azmat | Junior SEO Specialist",
+  ogDescription: "SEO strategy, technical optimization, content, and selected visual design work by Sabeera Azmat.",
+  ogImageAlt: "Sabeera Azmat - Junior SEO Specialist",
 };
 
 const experiences = [

@@ -1,9 +1,15 @@
 import type { MetadataRoute } from "next";
+import { getPortfolioData } from "@/sanity/lib/fetch";
 
-export default function robots(): MetadataRoute.Robots {
+export default async function robots(): Promise<MetadataRoute.Robots> {
+  const { settings } = await getPortfolioData();
+  const siteUrl = (settings?.canonicalUrl || "https://sabeera.vercel.app").replace(/\/$/, "");
+
   return {
-    rules: { userAgent: "*", allow: "/" },
-    sitemap: "https://sabeera.vercel.app/sitemap.xml",
-    host: "https://sabeera.vercel.app",
+    rules: settings?.noIndex
+      ? { userAgent: "*", disallow: "/" }
+      : { userAgent: "*", allow: "/" },
+    sitemap: `${siteUrl}/sitemap.xml`,
+    host: siteUrl,
   };
 }

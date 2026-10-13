@@ -1,0 +1,32 @@
+.portfolio-main {
+  min-height: 100vh;
+  overflow: hidden;
+  background: var(--primary-bg);
+  color: var(--primary-text);
+}
+
+.section-themed {
+  background: var(--section-bg) !important;
+  color: var(--section-text) !important;
+  box-shadow: 0 0 0 100vmax var(--section-bg);
+  clip-path: inset(0 -100vmax);
+}
+
+.section-themed :where(.eyebrow, .section-no, .about-copy > p, .experience-intro > p:last-child, .timeline-head, .timeline p, .work-heading > p, .work-meta > span, .tools-list span) {
+  color: inherit;
+  opacity: 0.72;
+}
+
+.portfolio-main :where(h1 em, h2 em, .signature-text),
+.portfolio-main .monogram span {
+  color: var(--signature-color) !important;
+}
+
+.portfolio-main .hero-ribbon { background: var(--signature-color); }
+.portfolio-main .expertise-grid svg,
+.portfolio-main .skill-row svg,
+.portfolio-main .timeline a { color: var(--signature-color) !important; }
+.portfolio-main .work-open { background: var(--primary-text); color: var(--primary-bg); }
+.portfolio-main .work-card:hover .work-open,
+.portfolio-main .button--primary:hover { background: var(--signature-color); border-color: var(--signature-color); }
+.cms-multiline { white-space: pre-line; }
