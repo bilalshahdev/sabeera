@@ -20,5 +20,13 @@ function singleton(S: Parameters<StructureResolver>[0], title: string, schemaTyp
   return S.listItem()
     .title(title)
     .id(schemaType)
-    .child(S.document().schemaType(schemaType).documentId(schemaType));
+    .schemaType(schemaType)
+    .child(
+      S.document()
+        .id(`${schemaType}Editor`)
+        .title(title)
+        .schemaType(schemaType)
+        .documentId(schemaType)
+        .views([S.view.form()]),
+    );
 }
