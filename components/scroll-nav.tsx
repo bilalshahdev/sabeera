@@ -6,6 +6,8 @@ import { useEffect, useRef, useState } from "react";
 export function ScrollNav({ children, navClassName, label }: { children: ReactNode; navClassName: string; label?: string }) {
   const [hidden, setHidden] = useState(false);
   const lastY = useRef(0);
+  const accumulatedMovement = useRef(0);
+  const lastDirection = useRef<"up" | "down" | null>(null);
   const ticking = useRef(false);
 
   useEffect(() => {
@@ -16,9 +18,23 @@ export function ScrollNav({ children, navClassName, label }: { children: ReactNo
       window.requestAnimationFrame(() => {
         const currentY = Math.max(0, window.scrollY);
         const movement = currentY - lastY.current;
-        if (currentY < 80) setHidden(false);
-        else if (movement > 6) setHidden(true);
-        else if (movement < -6) setHidden(false);
+        const direction = movement > 0 ? "down" : movement < 0 ? "up" : null;
+
+        if (direction && direction !== lastDirection.current) accumulatedMovement.current = 0;
+        accumulatedMovement.current += movement;
+
+        if (currentY < 80) {
+          setHidden(false);
+          accumulatedMovement.current = 0;
+        } else if (accumulatedMovement.current > 10) {
+          setHidden(true);
+          accumulatedMovement.current = 0;
+        } else if (accumulatedMovement.current < -10) {
+          setHidden(false);
+          accumulatedMovement.current = 0;
+        }
+
+        if (direction) lastDirection.current = direction;
         lastY.current = currentY;
         ticking.current = false;
       });

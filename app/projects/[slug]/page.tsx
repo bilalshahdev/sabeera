@@ -35,7 +35,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
   const categories = project.categories?.length ? project.categories.map(category => category.title) : [project.type || "Project"];
 
   return <main className="project-page">
-    <ScrollNav navClassName="project-nav shell" label="Project navigation"><Link href="/#work"><ArrowLeft size={16} /> Back to projects</Link><Link href="/">SA<span>.</span></Link></ScrollNav>
+    <ScrollNav navClassName="project-nav shell" label="Project navigation"><Link href="/#work"><ArrowLeft size={16} /> Go back</Link><Link href="/">SA<span>.</span></Link></ScrollNav>
     <header className="project-hero shell">
       <p>SELECTED WORK</p>
       <h1>{project.title}</h1>

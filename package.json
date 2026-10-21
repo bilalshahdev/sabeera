@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "sanity:seed": "node --env-file=.env.local scripts/seed-sanity.mjs",
-    "sanity:migrate-settings": "node --env-file=.env.local scripts/migrate-sanity-settings.mjs"
+    "sanity:migrate-settings": "node --env-file=.env.local scripts/migrate-sanity-settings.mjs",
+    "sanity:migrate-project-slugs": "node --env-file=.env.local scripts/migrate-project-slugs.mjs"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
