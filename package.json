@@ -12,7 +12,6 @@
     "sanity:migrate-project-slugs": "node --env-file=.env.local scripts/migrate-project-slugs.mjs"
   },
   "dependencies": {
-    "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-slot": "^1.2.3",
     "@sanity/vision": "4.22.0",
     "class-variance-authority": "^0.7.1",

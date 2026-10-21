@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { NavigationProgress } from "@/components/navigation-progress";
 import "./globals.css";
 import "./responsive.css";
 import "./image-loading.css";
@@ -51,5 +52,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en-PK"><body>{children}</body></html>;
+  return <html lang="en-PK"><body><NavigationProgress />{children}</body></html>;
 }
