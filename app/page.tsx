@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Fragment } from "react";
 import { Button } from "@/components/ui/button";
 import { PortfolioGrid } from "@/components/portfolio";
+import { SocialLinks } from "@/components/social-links";
 import { getPortfolioData } from "@/sanity/lib/fetch";
 import type { Experience, SectionConfig, SectionKey } from "@/sanity/lib/types";
 
@@ -84,7 +85,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
-  const { settings, experiences, projects } = await getPortfolioData();
+  const { settings, experiences, projects, projectCategories, projectTotal } = await getPortfolioData();
   const displaySkills = settings?.skills?.length ? settings.skills : fallbackSkills;
   const displayTools = settings?.tools?.length ? settings.tools : fallbackTools;
   const displayServices = settings?.services?.length ? settings.services : fallbackServices;
@@ -171,14 +172,14 @@ export default async function Home() {
     work: config => (
       <section className="work shell section-themed" style={styleFor(config)} id="work">
         <div className="work-heading"><div><p className="section-no">{sectionNumber("work")} / SELECTED WORK</p><h2 className="cms-multiline">{settings?.workHeading || "Visual work,\nmade with intent."}</h2></div><p>{settings?.workDescription || "A selection of brochure, campaign, and social media design explorations. Tap any project for a closer look."}</p></div>
-        <PortfolioGrid projects={projects} />
+        <PortfolioGrid projects={projects} categories={projectCategories} total={projectTotal} />
       </section>
     ),
     tools: config => (
       <section className="tools shell section-themed" style={styleFor(config)} id="tools"><p className="section-no">{sectionNumber("tools")} / TOOLS</p><div className="tools-list">{displayTools.map(tool => <span key={tool}>{tool}</span>)}</div></section>
     ),
     contact: config => (
-      <section className="contact section-themed" style={styleFor(config)} id="contact"><div className="shell contact-inner"><p className="section-no">{settings?.contactEyebrow || "LET’S CONNECT"}</p><h2 className="cms-multiline">{settings?.contactHeading || "Have a search challenge\nor a story to shape?"}</h2><a className="email-link" href={`mailto:${email}`}>{email} <ArrowUpRight /></a><div className="contact-meta"><span><MapPin size={15} /> {location}</span><a href={`mailto:${email}`}><Mail size={15} /> Email me</a></div></div></section>
+      <section className="contact section-themed" style={styleFor(config)} id="contact"><div className="shell contact-inner"><p className="section-no">{settings?.contactEyebrow || "LET’S CONNECT"}</p><h2 className="cms-multiline">{settings?.contactHeading || "Have a search challenge\nor a story to shape?"}</h2><a className="email-link" href={`mailto:${email}`}>{email} <ArrowUpRight /></a><SocialLinks links={settings?.links} /><div className="contact-meta"><span><MapPin size={15} /> {location}</span><a href={`mailto:${email}`}><Mail size={15} /> Email me</a></div></div></section>
     ),
     footer: config => (
       <footer className="shell section-themed" style={styleFor(config)}><span>© {new Date().getFullYear()} {brandName}</span><a href="#top">Back to top <ArrowUpRight size={14} /></a></footer>

@@ -35,6 +35,7 @@ export type SiteSettings = {
   email?: string;
   location?: string;
   resumeUrl?: string;
+  links?: SocialLink[];
   sections?: SectionConfig[];
   signatureColor?: string;
   primaryBackgroundColor?: string;
@@ -52,6 +53,16 @@ export type SiteSettings = {
   noIndex?: boolean;
 };
 
+export type SocialLink = {
+  _key: string;
+  label: string;
+  title?: string;
+  url: string;
+  icon?: string;
+  visible?: boolean;
+  newTab?: boolean;
+};
+
 export type Experience = {
   _id: string;
   period: string;
@@ -66,16 +77,25 @@ export type Experience = {
 export type PortfolioProject = {
   _id: string;
   title: string;
-  type: string;
+  slug?: string;
+  description?: string;
+  type?: string;
+  categories: ProjectCategory[];
   imageUrl: string;
   imageAlt?: string;
+  gallery: ProjectImage[];
   fileUrl?: string;
   externalUrl?: string;
   wide?: boolean;
 };
 
+export type ProjectImage = { _key?: string; url: string; alt?: string; caption?: string };
+export type ProjectCategory = { _id: string; title: string; slug: string; description?: string };
+
 export type PortfolioData = {
   settings: SiteSettings | null;
   experiences: Experience[];
   projects: PortfolioProject[];
+  projectCategories: ProjectCategory[];
+  projectTotal: number;
 };

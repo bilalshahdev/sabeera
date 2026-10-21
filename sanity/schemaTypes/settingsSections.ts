@@ -134,6 +134,32 @@ export const contactSettings = defineType({
     defineField({ name: "email", title: "Email", type: "email" }),
     defineField({ name: "location", title: "Location", type: "string" }),
     defineField({ name: "resume", title: "Resume PDF", type: "file", options: { accept: ".pdf" } }),
+    defineField({
+      name: "links",
+      title: "Social & external links",
+      description: "Add as many links as needed and drag them into display order.",
+      type: "array",
+      of: [defineArrayMember({
+        name: "socialLink",
+        title: "Link",
+        type: "object",
+        fields: [
+          defineField({ name: "label", title: "Label", type: "string", validation: rule => rule.required() }),
+          defineField({ name: "title", title: "Optional description", type: "string" }),
+          defineField({ name: "url", title: "URL", type: "url", validation: rule => rule.required().uri({ allowRelative: false, scheme: ["http", "https", "mailto"] }) }),
+          defineField({
+            name: "icon",
+            title: "Icon",
+            type: "string",
+            initialValue: "link",
+            options: { list: ["LinkedIn", "Instagram", "GitHub", "Facebook", "X / Twitter", "YouTube", "Behance", "Dribbble", "Website", "Email", "Link"].map(title => ({ title, value: title.toLowerCase().replace(" / twitter", "").replace(" ", "-") })) },
+          }),
+          defineField({ name: "visible", title: "Visible", type: "boolean", initialValue: true }),
+          defineField({ name: "newTab", title: "Open in a new tab", type: "boolean", initialValue: true }),
+        ],
+        preview: { select: { title: "label", subtitle: "url" } },
+      })],
+    }),
   ],
 });
 

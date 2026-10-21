@@ -32,6 +32,7 @@ export const portfolioQuery = defineQuery(`{
     "email": coalesce(*[_type == "contactSettings"][0].email, *[_type == "siteSettings"][0].email),
     "location": coalesce(*[_type == "contactSettings"][0].location, *[_type == "siteSettings"][0].location),
     "resumeUrl": coalesce(*[_type == "contactSettings"][0].resume.asset->url, *[_type == "siteSettings"][0].resume.asset->url),
+    "links": *[_type == "contactSettings"][0].links[]{_key, label, title, url, icon, visible, newTab},
     "seoTitle": coalesce(*[_type == "seoSettings"][0].seoTitle, *[_type == "siteSettings"][0].seoTitle),
     "seoDescription": coalesce(*[_type == "seoSettings"][0].seoDescription, *[_type == "siteSettings"][0].seoDescription),
     "seoKeywords": coalesce(*[_type == "seoSettings"][0].seoKeywords, *[_type == "siteSettings"][0].seoKeywords),
@@ -54,14 +55,49 @@ export const portfolioQuery = defineQuery(`{
     url,
     description
   },
-  "projects": *[_type == "project"] | order(order asc){
+  "projectCategories": *[_type == "projectCategory"] | order(order asc, title asc){
+    _id, title, "slug": slug.current, description
+  },
+  "projectTotal": count(*[_type == "project"]),
+  "projects": *[_type == "project"] | order(order asc)[0...6]{
     _id,
     title,
+    "slug": slug.current,
+    description,
     type,
+    "categories": categories[]->{_id, title, "slug": slug.current, description},
     "imageUrl": image.asset->url,
     imageAlt,
+    "gallery": gallery[]{_key, "url": asset->url, alt, caption},
     "fileUrl": file.asset->url,
     externalUrl,
     wide
   }
+}`);
+
+export const projectsPageQuery = defineQuery(`{
+  "projects": *[
+    _type == "project" &&
+    ($category == "all" || $category in categories[]->slug.current || (!defined(categories[0]) && lower(type) == lower($category)))
+  ] | order(order asc)[$start...$end]{
+    _id, title, "slug": slug.current, description, type,
+    "categories": categories[]->{_id, title, "slug": slug.current, description},
+    "imageUrl": image.asset->url, imageAlt,
+    "gallery": gallery[]{_key, "url": asset->url, alt, caption},
+    "fileUrl": file.asset->url, externalUrl, wide
+  },
+  "total": count(*[
+    _type == "project" &&
+    ($category == "all" || $category in categories[]->slug.current || (!defined(categories[0]) && lower(type) == lower($category)))
+  ])
+}`);
+
+export const projectDetailQuery = defineQuery(`*[
+  _type == "project" && (slug.current == $slug || _id == $slug)
+][0]{
+  _id, title, "slug": slug.current, description, type,
+  "categories": categories[]->{_id, title, "slug": slug.current, description},
+  "imageUrl": image.asset->url, imageAlt,
+  "gallery": gallery[]{_key, "url": asset->url, alt, caption},
+  "fileUrl": file.asset->url, externalUrl, wide
 }`);

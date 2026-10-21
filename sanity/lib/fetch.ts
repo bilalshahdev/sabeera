@@ -7,6 +7,6 @@ export async function getPortfolioData(): Promise<PortfolioData> {
     return await client.fetch<PortfolioData>(portfolioQuery, {}, { next: { revalidate: 60 } });
   } catch (error) {
     console.error("Unable to load Sanity content; using local fallback.", error);
-    return { settings: null, experiences: [], projects: [] };
+    return { settings: null, experiences: [], projects: [], projectCategories: [], projectTotal: 0 };
   }
 }

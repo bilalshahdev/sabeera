@@ -13,6 +13,7 @@ export const structure: StructureResolver = S =>
       singleton(S, "SEO & Social Sharing", "seoSettings"),
       S.divider(),
       S.documentTypeListItem("experience").title("Experience"),
+      S.documentTypeListItem("projectCategory").title("Project Types"),
       S.documentTypeListItem("project").title("Portfolio Projects"),
     ]);
 

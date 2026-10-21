@@ -3,6 +3,7 @@ import "./globals.css";
 import "./responsive.css";
 import "./image-loading.css";
 import "./theme-overrides.css";
+import "./projects.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://sabeera.vercel.app"),

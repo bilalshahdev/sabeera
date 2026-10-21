@@ -1,80 +1,119 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
-import { ArrowUpRight, ExternalLink } from "lucide-react";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import type { PortfolioProject } from "@/sanity/lib/types";
+import Link from "next/link";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { ArrowUpRight, LoaderCircle } from "lucide-react";
+import type { PortfolioProject, ProjectCategory, ProjectImage } from "@/sanity/lib/types";
 
-type WorkItem = { title: string; type: string; image: string; file?: string; wide?: boolean; imageAlt?: string };
+const PAGE_SIZE = 6;
 
-const fallbackWork: WorkItem[] = [
-  { title: "Fashion Trifold", type: "Editorial brochure", image: "/work/trifold-brochure.webp", file: "/work/trifold-brochure.pdf", wide: true },
-  { title: "Perfect Home", type: "Promotional flyer", image: "/work/brand-flyer.webp", file: "/work/brand-flyer.pdf" },
-  { title: "Study Visa", type: "Social media creative", image: "/work/study-visa.webp" },
-  { title: "Birthday Portraits", type: "Campaign flyer", image: "/work/birthday-flyer.webp", file: "/work/birthday-flyer.pdf" },
-  { title: "Next Step Academy", type: "Social media creative", image: "/work/school-admission.webp" },
-  { title: "A&CO Carpentry", type: "Brand brochure", image: "/work/carpentry-brochure.webp", file: "/work/carpentry-brochure.pdf", wide: true },
-];
-
-function LoadableImage({ src, alt, sizes, contain = false }: { src: string; alt: string; sizes: string; contain?: boolean }) {
+function LoadableImage({ src, alt }: { src: string; alt: string }) {
   const [loaded, setLoaded] = useState(false);
-
-  return (
-    <>
-      <span className={`image-skeleton ${loaded ? "image-skeleton--hidden" : ""}`} aria-hidden="true" />
-      <Image
-        src={src}
-        alt={alt}
-        fill
-        sizes={sizes}
-        className={`${contain ? "image-contain" : ""} ${loaded ? "image-loaded" : "image-loading"}`}
-        onLoad={() => setLoaded(true)}
-      />
-    </>
-  );
+  return <>
+    <span className={`image-skeleton ${loaded ? "image-skeleton--hidden" : ""}`} aria-hidden="true" />
+    <Image src={src} alt={alt} fill sizes="(max-width: 760px) calc(100vw - 30px), 576px" className={loaded ? "image-loaded" : "image-loading"} onLoad={() => setLoaded(true)} />
+  </>;
 }
 
-export function PortfolioGrid({ projects = [] }: { projects?: PortfolioProject[] }) {
-  const work = projects.length
-    ? projects.map(project => ({
-        title: project.title,
-        type: project.type,
-        image: project.imageUrl,
-        file: project.fileUrl || project.externalUrl,
-        wide: project.wide,
-        imageAlt: project.imageAlt,
-      }))
-    : fallbackWork;
+function CardCarousel({ project }: { project: PortfolioProject }) {
+  const images: ProjectImage[] = [
+    { url: project.imageUrl, alt: project.imageAlt },
+    ...(project.gallery || []).filter(image => image.url !== project.imageUrl),
+  ];
+  const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
 
-  return (
+  useEffect(() => {
+    if (paused || images.length < 2) return;
+    const timer = window.setInterval(() => setActive(value => (value + 1) % images.length), 3800);
+    return () => window.clearInterval(timer);
+  }, [images.length, paused]);
+
+  return <span className="work-carousel" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
+    {images.map((image, index) => <span className={`work-slide ${index === active ? "work-slide--active" : ""}`} key={image._key || image.url} aria-hidden={index !== active}>
+      <LoadableImage src={image.url} alt={image.alt || `${project.title} project image ${index + 1}`} />
+    </span>)}
+    {images.length > 1 && <span className="work-dots" aria-hidden="true">{images.map((_, index) => <i className={index === active ? "active" : ""} key={index} />)}</span>}
+  </span>;
+}
+
+function ProjectCard({ project, index }: { project: PortfolioProject; index: number }) {
+  const categoryNames = project.categories?.length ? project.categories.map(category => category.title) : [project.type || "Project"];
+  return <Link href={`/projects/${encodeURIComponent(project.slug || project._id)}`} className={`work-card ${project.wide ? "work-card--wide" : ""}`} aria-label={`View ${project.title}`}>
+    <span className="work-image">
+      <CardCarousel project={project} />
+      <span className="work-index">{String(index + 1).padStart(2, "0")}</span>
+      <span className="work-open"><ArrowUpRight size={20} /></span>
+    </span>
+    <span className="work-meta">
+      <strong>{project.title}</strong>
+      <span>{categoryNames.join(" · ")}</span>
+    </span>
+  </Link>;
+}
+
+export function PortfolioGrid({ projects, categories, total }: { projects: PortfolioProject[]; categories: ProjectCategory[]; total: number }) {
+  const [items, setItems] = useState(projects);
+  const [activeCategory, setActiveCategory] = useState("all");
+  const [available, setAvailable] = useState(total);
+  const [loading, setLoading] = useState(false);
+  const loadingRef = useRef(false);
+  const marker = useRef<HTMLDivElement>(null);
+  const requestId = useRef(0);
+
+  const fetchPage = useCallback(async (category: string, start: number, replace = false) => {
+    if (loadingRef.current) return;
+    loadingRef.current = true;
+    setLoading(true);
+    const currentRequest = ++requestId.current;
+    try {
+      const response = await fetch(`/api/projects?category=${encodeURIComponent(category)}&start=${start}`);
+      if (!response.ok) throw new Error("Unable to load projects");
+      const data = await response.json() as { projects: PortfolioProject[]; total: number };
+      if (currentRequest !== requestId.current) return;
+      setItems(previous => replace ? data.projects : [...previous, ...data.projects.filter(next => !previous.some(item => item._id === next._id))]);
+      setAvailable(data.total);
+    } catch {
+      if (currentRequest === requestId.current) setAvailable(start);
+    } finally {
+      if (currentRequest === requestId.current) {
+        loadingRef.current = false;
+        setLoading(false);
+      }
+    }
+  }, []);
+
+  const selectCategory = (slug: string) => {
+    if (slug === activeCategory) return;
+    requestId.current += 1;
+    loadingRef.current = false;
+    setLoading(false);
+    setActiveCategory(slug);
+    setItems([]);
+    setAvailable(Number.POSITIVE_INFINITY);
+    void fetchPage(slug, 0, true);
+  };
+
+  useEffect(() => {
+    const target = marker.current;
+    if (!target || items.length >= available) return;
+    const observer = new IntersectionObserver(entries => {
+      if (entries[0]?.isIntersecting && !loading) void fetchPage(activeCategory, items.length);
+    }, { rootMargin: "500px" });
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [activeCategory, available, fetchPage, items.length, loading]);
+
+  return <>
+    {categories.length > 0 && <div className="project-filters" aria-label="Filter projects by type">
+      <button className={activeCategory === "all" ? "active" : ""} onClick={() => selectCategory("all")}>All projects</button>
+      {categories.map(category => <button className={activeCategory === category.slug ? "active" : ""} onClick={() => selectCategory(category.slug)} key={category._id}>{category.title}</button>)}
+    </div>}
     <div className="work-grid">
-      {work.map((item, index) => (
-        <Dialog key={item.title}>
-          <DialogTrigger asChild>
-            <button className={`work-card ${item.wide ? "work-card--wide" : ""}`} aria-label={`Preview ${item.title}`}>
-              <span className="work-image">
-                <LoadableImage src={item.image} alt={item.imageAlt || `${item.title} design by Sabeera Azmat`} sizes="(max-width: 760px) calc(100vw - 30px), 576px" />
-                <span className="work-index">0{index + 1}</span>
-                <span className="work-open"><ArrowUpRight size={20} /></span>
-              </span>
-              <span className="work-meta">
-                <strong>{item.title}</strong>
-                <span>{item.type}</span>
-              </span>
-            </button>
-          </DialogTrigger>
-          <DialogContent title={item.title}>
-            <div className="preview-image">
-              <LoadableImage src={item.image} alt={`${item.title} full preview`} sizes="(max-width: 930px) calc(100vw - 66px), 864px" contain />
-            </div>
-            <div className="preview-caption">
-              <div><span>{item.type}</span><h3>{item.title}</h3></div>
-              {item.file && <a href={item.file} target="_blank" rel="noreferrer">Open full PDF <ExternalLink size={15} /></a>}
-            </div>
-          </DialogContent>
-        </Dialog>
-      ))}
+      {items.map((project, index) => <ProjectCard project={project} index={index} key={project._id} />)}
     </div>
-  );
+    {!loading && items.length === 0 && <p className="projects-empty">No projects have been published in this category yet.</p>}
+    <div className="projects-load-marker" ref={marker}>{loading && <><LoaderCircle className="spin" size={20} /> Loading projects</>}</div>
+  </>;
 }
