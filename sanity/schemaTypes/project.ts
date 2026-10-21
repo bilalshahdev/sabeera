@@ -36,6 +36,7 @@ export const project = defineType({
     }),
     defineField({ name: "file", title: "Project PDF", type: "file", options: { accept: ".pdf" } }),
     defineField({ name: "externalUrl", title: "External project URL", type: "url" }),
+    defineField({ name: "featured", title: "Feature on homepage", type: "boolean", description: "Featured projects are shown in the four-project homepage selection.", initialValue: false }),
     defineField({ name: "wide", title: "Use wide card", type: "boolean", initialValue: false }),
     defineField({ name: "order", title: "Display order", type: "number", initialValue: 0, validation: rule => rule.required().integer().min(0) }),
   ],

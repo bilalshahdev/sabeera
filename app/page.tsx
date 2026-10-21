@@ -85,7 +85,8 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
-  const { settings, experiences, projects, projectCategories, projectTotal } = await getPortfolioData();
+  const { settings, experiences, projects, featuredProjects } = await getPortfolioData();
+  const homepageProjects = [...featuredProjects, ...projects.filter(project => !featuredProjects.some(featured => featured._id === project._id))].slice(0, 4);
   const displaySkills = settings?.skills?.length ? settings.skills : fallbackSkills;
   const displayTools = settings?.tools?.length ? settings.tools : fallbackTools;
   const displayServices = settings?.services?.length ? settings.services : fallbackServices;
@@ -172,7 +173,7 @@ export default async function Home() {
     work: config => (
       <section className="work shell section-themed" style={styleFor(config)} id="work">
         <div className="work-heading"><div><p className="section-no">{sectionNumber("work")} / SELECTED WORK</p><h2 className="cms-multiline">{settings?.workHeading || "Visual work,\nmade with intent."}</h2></div><p>{settings?.workDescription || "A selection of brochure, campaign, and social media design explorations. Tap any project for a closer look."}</p></div>
-        <PortfolioGrid projects={projects} categories={projectCategories} total={projectTotal} />
+        <PortfolioGrid projects={homepageProjects} archive={false} />
       </section>
     ),
     tools: config => (

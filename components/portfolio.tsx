@@ -53,7 +53,7 @@ function ProjectCard({ project, index }: { project: PortfolioProject; index: num
   </Link>;
 }
 
-export function PortfolioGrid({ projects, categories, total }: { projects: PortfolioProject[]; categories: ProjectCategory[]; total: number }) {
+export function PortfolioGrid({ projects, categories = [], total = projects.length, archive = true }: { projects: PortfolioProject[]; categories?: ProjectCategory[]; total?: number; archive?: boolean }) {
   const [items, setItems] = useState(projects);
   const [activeCategory, setActiveCategory] = useState("all");
   const [available, setAvailable] = useState(total);
@@ -96,6 +96,7 @@ export function PortfolioGrid({ projects, categories, total }: { projects: Portf
   };
 
   useEffect(() => {
+    if (!archive) return;
     const target = marker.current;
     if (!target || items.length >= available) return;
     const observer = new IntersectionObserver(entries => {
@@ -103,10 +104,10 @@ export function PortfolioGrid({ projects, categories, total }: { projects: Portf
     }, { rootMargin: "500px" });
     observer.observe(target);
     return () => observer.disconnect();
-  }, [activeCategory, available, fetchPage, items.length, loading]);
+  }, [activeCategory, archive, available, fetchPage, items.length, loading]);
 
   return <>
-    {categories.length > 0 && <div className="project-filters" aria-label="Filter projects by type">
+    {archive && categories.length > 0 && <div className="project-filters" aria-label="Filter projects by type">
       <button className={activeCategory === "all" ? "active" : ""} onClick={() => selectCategory("all")}>All projects</button>
       {categories.map(category => <button className={activeCategory === category.slug ? "active" : ""} onClick={() => selectCategory(category.slug)} key={category._id}>{category.title}</button>)}
     </div>}
@@ -114,6 +115,6 @@ export function PortfolioGrid({ projects, categories, total }: { projects: Portf
       {items.map((project, index) => <ProjectCard project={project} index={index} key={project._id} />)}
     </div>
     {!loading && items.length === 0 && <p className="projects-empty">No projects have been published in this category yet.</p>}
-    <div className="projects-load-marker" ref={marker}>{loading && <><LoaderCircle className="spin" size={20} /> Loading projects</>}</div>
+    {archive ? <div className="projects-load-marker" ref={marker}>{loading && <><LoaderCircle className="spin" size={20} /> Loading projects</>}</div> : <div className="view-all-projects"><Link href="/projects">View all projects <ArrowUpRight size={17} /></Link></div>}
   </>;
 }

@@ -86,6 +86,7 @@ export type PortfolioProject = {
   gallery: ProjectImage[];
   fileUrl?: string;
   externalUrl?: string;
+  featured?: boolean;
   wide?: boolean;
 };
 
@@ -96,6 +97,7 @@ export type PortfolioData = {
   settings: SiteSettings | null;
   experiences: Experience[];
   projects: PortfolioProject[];
+  featuredProjects: PortfolioProject[];
   projectCategories: ProjectCategory[];
   projectTotal: number;
 };

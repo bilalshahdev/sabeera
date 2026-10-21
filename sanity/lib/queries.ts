@@ -59,6 +59,13 @@ export const portfolioQuery = defineQuery(`{
     _id, title, "slug": slug.current, description
   },
   "projectTotal": count(*[_type == "project"]),
+  "featuredProjects": *[_type == "project" && featured == true] | order(order asc)[0...4]{
+    _id, title, "slug": slug.current, description, type, featured,
+    "categories": categories[]->{_id, title, "slug": slug.current, description},
+    "imageUrl": image.asset->url, imageAlt,
+    "gallery": gallery[]{_key, "url": asset->url, alt, caption},
+    "fileUrl": file.asset->url, externalUrl, wide
+  },
   "projects": *[_type == "project"] | order(order asc)[0...6]{
     _id,
     title,
@@ -71,6 +78,7 @@ export const portfolioQuery = defineQuery(`{
     "gallery": gallery[]{_key, "url": asset->url, alt, caption},
     "fileUrl": file.asset->url,
     externalUrl,
+    featured,
     wide
   }
 }`);
@@ -84,7 +92,7 @@ export const projectsPageQuery = defineQuery(`{
     "categories": categories[]->{_id, title, "slug": slug.current, description},
     "imageUrl": image.asset->url, imageAlt,
     "gallery": gallery[]{_key, "url": asset->url, alt, caption},
-    "fileUrl": file.asset->url, externalUrl, wide
+    "fileUrl": file.asset->url, externalUrl, featured, wide
   },
   "total": count(*[
     _type == "project" &&
@@ -99,5 +107,9 @@ export const projectDetailQuery = defineQuery(`*[
   "categories": categories[]->{_id, title, "slug": slug.current, description},
   "imageUrl": image.asset->url, imageAlt,
   "gallery": gallery[]{_key, "url": asset->url, alt, caption},
-  "fileUrl": file.asset->url, externalUrl, wide
+  "fileUrl": file.asset->url, externalUrl, featured, wide
+}`);
+
+export const projectSitemapQuery = defineQuery(`*[_type == "project"] | order(order asc){
+  _id, "slug": slug.current, _updatedAt
 }`);

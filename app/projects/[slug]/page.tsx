@@ -19,6 +19,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: `${project.title} | Sabeera Azmat`,
     description: project.description || `${project.title}, a selected portfolio project by Sabeera Azmat.`,
+    alternates: { canonical: `/projects/${encodeURIComponent(project.slug || project._id)}` },
     openGraph: { images: project.imageUrl ? [{ url: project.imageUrl, alt: project.imageAlt || project.title }] : [] },
   };
 }
