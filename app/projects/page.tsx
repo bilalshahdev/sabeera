@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { PortfolioGrid } from "@/components/portfolio";
+import { ScrollNav } from "@/components/scroll-nav";
 import { getPortfolioData } from "@/sanity/lib/fetch";
 
 export const metadata: Metadata = {
@@ -25,7 +26,7 @@ export default async function ProjectsPage() {
   };
 
   return <main className="projects-page" style={style}>
-    <nav className="project-nav shell"><Link href="/#work"><ArrowLeft size={16} /> Back to portfolio</Link><Link href="/" aria-label={`${brandName} home`}>{brandMark}<span>.</span></Link></nav>
+    <ScrollNav navClassName="project-nav shell" label="Projects navigation"><Link href="/#work"><ArrowLeft size={16} /> Back to portfolio</Link><Link href="/" aria-label={`${brandName} home`}>{brandMark}<span>.</span></Link></ScrollNav>
     <header className="projects-page-heading shell">
       <p>PROJECT ARCHIVE</p>
       <h1>Selected work,<br /><em>all in one place.</em></h1>

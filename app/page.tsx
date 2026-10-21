@@ -5,6 +5,7 @@ import { Fragment } from "react";
 import { Button } from "@/components/ui/button";
 import { PortfolioGrid } from "@/components/portfolio";
 import { SocialLinks } from "@/components/social-links";
+import { ScrollNav } from "@/components/scroll-nav";
 import { getPortfolioData } from "@/sanity/lib/fetch";
 import type { Experience, SectionConfig, SectionKey } from "@/sanity/lib/types";
 
@@ -190,11 +191,11 @@ export default async function Home() {
   return (
     <main className="portfolio-main" id="top" style={mainStyle}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema).replace(/</g, "\\u003c") }} />
-      <nav className="nav shell" aria-label="Main navigation">
+      <ScrollNav navClassName="nav shell" label="Main navigation">
         <a className="monogram" href="#top" aria-label={`${brandName} home`}>{brandMark}<span>.</span></a>
         <div className="nav-links">{visibleSections.filter(item => ["about", "experience", "work", "contact"].includes(item.section)).map(item => <a href={`#${item.section}`} key={item.section}>{sectionNames[item.section]}</a>)}</div>
         <a className="nav-contact" href={`mailto:${email}`}>Let&apos;s talk <ArrowUpRight size={16} /></a>
-      </nav>
+      </ScrollNav>
       {visibleSections.map(config => <Fragment key={config._key || config.section}>{contentSections[config.section](config)}</Fragment>)}
     </main>
   );

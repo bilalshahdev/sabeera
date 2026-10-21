@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { ProjectGallery } from "@/components/project-gallery";
 import { Button } from "@/components/ui/button";
+import { ScrollNav } from "@/components/scroll-nav";
 import { client } from "@/sanity/lib/client";
 import { projectDetailQuery } from "@/sanity/lib/queries";
 import type { PortfolioProject, ProjectImage } from "@/sanity/lib/types";
@@ -26,13 +27,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function ProjectPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const project = await getProject(decodeURIComponent(slug));
+  const decodedSlug = decodeURIComponent(slug);
+  const project = await getProject(decodedSlug);
   if (!project) notFound();
+  if (project.slug && decodedSlug !== project.slug) redirect(`/projects/${encodeURIComponent(project.slug)}`);
   const images: ProjectImage[] = [{ url: project.imageUrl, alt: project.imageAlt }, ...(project.gallery || []).filter(image => image.url !== project.imageUrl)];
   const categories = project.categories?.length ? project.categories.map(category => category.title) : [project.type || "Project"];
 
   return <main className="project-page">
-    <nav className="project-nav shell"><Link href="/#work"><ArrowLeft size={16} /> Back to projects</Link><Link href="/">SA<span>.</span></Link></nav>
+    <ScrollNav navClassName="project-nav shell" label="Project navigation"><Link href="/#work"><ArrowLeft size={16} /> Back to projects</Link><Link href="/">SA<span>.</span></Link></ScrollNav>
     <header className="project-hero shell">
       <p>SELECTED WORK</p>
       <h1>{project.title}</h1>

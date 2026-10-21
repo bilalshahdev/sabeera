@@ -1,4 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { AutoSlugInput } from "../components/AutoSlugInput";
 
 export const project = defineType({
   name: "project",
@@ -6,7 +7,7 @@ export const project = defineType({
   type: "document",
   fields: [
     defineField({ name: "title", title: "Title", type: "string", validation: rule => rule.required() }),
-    defineField({ name: "slug", title: "Page slug", type: "slug", options: { source: "title", maxLength: 96 }, validation: rule => rule.required() }),
+    defineField({ name: "slug", title: "Page slug", type: "slug", description: "Generated automatically from the title and kept unique for SEO-friendly URLs.", options: { source: "title", maxLength: 96 }, components: { input: AutoSlugInput }, validation: rule => rule.required() }),
     defineField({ name: "description", title: "Project description", type: "text", rows: 5 }),
     defineField({
       name: "categories",

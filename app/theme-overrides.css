@@ -1,6 +1,6 @@
 .portfolio-main {
   min-height: 100vh;
-  overflow: hidden;
+  overflow-x: clip;
   background: var(--primary-bg);
   color: var(--primary-text);
 }
@@ -30,3 +30,21 @@
 .portfolio-main .work-card:hover .work-open,
 .portfolio-main .button--primary:hover { background: var(--signature-color); border-color: var(--signature-color); }
 .cms-multiline { white-space: pre-line; }
+
+.scroll-nav {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  width: 100%;
+  background: color-mix(in srgb, var(--primary-bg) 92%, transparent);
+  backdrop-filter: blur(14px);
+  transition: transform 280ms cubic-bezier(.22,.61,.36,1), box-shadow 280ms ease;
+  will-change: transform;
+}
+
+.scroll-nav--hidden { transform: translateY(-110%); }
+.scroll-nav:not(.scroll-nav--hidden) { box-shadow: 0 1px 0 rgba(31,33,29,.1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-nav { transition: none; }
+}
